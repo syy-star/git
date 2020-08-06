@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+	例如namespace="com.szh.mapper.personMapper"就是com.szh.mapper(包名)+personMapper(personMapper.xml文件去除后缀) -->
+<mapper namespace="com.fh.TestMapper.GoodsMapper">
+    <select id="selectGoodsAll" parameterType="java.lang.Integer" resultType="com.fh.model.Goods">
+        select * from t_goods where isNotHotSale=1
+    </select>
+
+    <select id="selectGoodsMessageByGoodsId" resultType="com.fh.model.Goods" parameterType="java.lang.Integer">
+        select goodsId,goodsName,goodsPrice,fileName from t_goods
+        <where>
+            <if test="typeId!= null">
+                and types like concat('%',#{typeId},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGoodsMessageById" resultType="com.fh.model.Goods" parameterType="java.lang.Integer">
+        select * from t_goods where goodsId=#{goodsId}
+    </select>
+
+    <select id="selectProCartById" parameterType="java.lang.Integer" resultType="com.fh.model.ProductCart">
+         select goodsId,goodsName,fileName,goodsPrice from t_goods where goodsId=#{goodsId}
+    </select>
+
+    <update id="updateOrderDetail" parameterType="java.lang.Integer">
+        update t_goods set stockCount = stockCount-#{count} where goodsId=#{goodsId} and stockCount-#{count}>=0
+    </update>
+</mapper>
